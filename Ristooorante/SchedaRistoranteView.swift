@@ -12,6 +12,8 @@ struct SchedaRistoranteView: View {
     let ristorante: Ristorante
     let posizione: CLLocation?
     @Environment(\.dismiss) private var dismiss
+    @State private var mostraMenu = false
+    @State private var mostraSito = false
 
     var coordinate: CLLocationCoordinate2D? {
         guard let lat = ristorante.lat, let lng = ristorante.lng else { return nil }
@@ -77,26 +79,35 @@ struct SchedaRistoranteView: View {
                         }
                     }
 
-                    if let sito = ristorante.sito_web, let url = URL(string: sito) {
-                        Link(destination: url) {
-                            Label("Sito web", systemImage: "globe")
-                                .foregroundStyle(Color("Bordeaux"))
-                        }
-                    }
-
+                                if let sito = ristorante.sito_web, let url = URL(string: sito) {
+                                                        Button {
+                                                            mostraSito = true
+                                                        } label: {
+                                                            Label("Sito web", systemImage: "globe")
+                                                                .foregroundStyle(Color("Bordeaux"))
+                                                        }
+                                                        .sheet(isPresented: $mostraSito) {
+                                                            MenuView(url: url, titolo: "Sito web")
+                                                        }
+                                                    }
                     Divider()
 
-                    if let urlMenu = ristorante.url_menu, let url = URL(string: urlMenu) {
-                        Link(destination: url) {
-                            Label("Apri menu", systemImage: "menucard")
-                                .font(.headline)
-                                .foregroundStyle(.white)
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                .background(Color("Bordeaux").opacity(0.7))
-                                .clipShape(RoundedRectangle(cornerRadius: 12))
-                        }
-                    }
+                                if let urlMenu = ristorante.url_menu, let url = URL(string: urlMenu) {
+                                                        Button {
+                                                            mostraMenu = true
+                                                        } label: {
+                                                            Label("Apri menu", systemImage: "menucard")
+                                                                .font(.headline)
+                                                                .foregroundStyle(.white)
+                                                                .frame(maxWidth: .infinity)
+                                                                .padding()
+                                                                .background(Color("Bordeaux").opacity(0.7))
+                                                                .clipShape(RoundedRectangle(cornerRadius: 12))
+                                                        }
+                                                        .sheet(isPresented: $mostraMenu) {
+                                                            MenuView(url: url, titolo: "Menu")
+                                                        }
+                                                    }
 
                     Button {
                         // prenotazione — prossimo step
