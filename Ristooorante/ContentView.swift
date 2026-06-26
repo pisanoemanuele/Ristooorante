@@ -13,6 +13,8 @@ struct ContentView: View {
     @StateObject private var locationManager = LocationManager()
     @State private var position: MapCameraPosition = .userLocation(fallback: .region(MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 44.4056, longitude: 8.9463), span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1))))
     @State private var mostraVicinanze = false
+    @AppStorage("raggioVicinanze") var raggioVicinanze: Double = 5.0
+    @State private var mostraImpostazioni = false
     @State private var cercaLocalita = ""
     
 
@@ -37,16 +39,26 @@ struct ContentView: View {
 
                 HStack {
                     Button {
-                        mostraVicinanze = true
-                    } label: {
-                        Label("Nelle vicinanze", systemImage: "fork.knife")
-                                                    .font(.headline)
-                                                    .foregroundStyle(.white)
-                                                    .padding(.horizontal, 20)
-                                                    .padding(.vertical, 12)
-                                                    .background(Color("Bordeaux"))
-                                                    .clipShape(Capsule())
-                    }
+                                    mostraImpostazioni = true
+                                } label: {
+                                    Image(systemName: "gearshape.fill")
+                                        .foregroundStyle(.white)
+                                        .padding(12)
+                                        .background(Color("Bordeaux"))
+                                        .clipShape(Circle())
+                                }
+
+                                Button {
+                                    mostraVicinanze = true
+                                } label: {
+                                    Label("Nelle vicinanze", systemImage: "fork.knife")
+                                        .font(.headline)
+                                        .foregroundStyle(.white)
+                                        .padding(.horizontal, 20)
+                                        .padding(.vertical, 12)
+                                        .background(Color("Bordeaux"))
+                                        .clipShape(Capsule())
+                                }
 
                     Spacer()
 
@@ -67,8 +79,11 @@ struct ContentView: View {
                 .padding(.bottom, 30)
             }
         }
+        .sheet(isPresented: $mostraImpostazioni) {
+            ImpostazioniView()
+        }
         .sheet(isPresented: $mostraVicinanze) {
-            VicininzeView(ristoranti: viewModel.ristoranti)
+            VicininzeView(ristoranti: viewModel.ristoranti, posizione: locationManager.posizione, raggio: raggioVicinanze)
         }
         .task {
             await viewModel.caricaRistoranti()
