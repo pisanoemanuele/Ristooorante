@@ -13,6 +13,8 @@ struct ContentView: View {
     @StateObject private var locationManager = LocationManager()
     @State private var position: MapCameraPosition = .userLocation(fallback: .region(MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 44.4056, longitude: 8.9463), span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1))))
     @State private var mostraVicinanze = false
+    @State private var cercaLocalita = ""
+    
 
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -28,17 +30,42 @@ struct ContentView: View {
             }
             .ignoresSafeArea()
 
-            Button {
-                mostraVicinanze = true
-            } label: {
-                Label("Nelle vicinanze", systemImage: "fork.knife")
-                    .font(.headline)
-                    .padding(.horizontal, 20)
-                    .padding(.vertical, 12)
-                    .background(.ultraThinMaterial)
-                    .clipShape(Capsule())
+            VStack {
+                CercaLocalitaView(position: $position, cercaLocalita: $cercaLocalita)
+
+                Spacer()
+
+                HStack {
+                    Button {
+                        mostraVicinanze = true
+                    } label: {
+                        Label("Nelle vicinanze", systemImage: "fork.knife")
+                                                    .font(.headline)
+                                                    .foregroundStyle(.white)
+                                                    .padding(.horizontal, 20)
+                                                    .padding(.vertical, 12)
+                                                    .background(Color("Bordeaux"))
+                                                    .clipShape(Capsule())
+                    }
+
+                    Spacer()
+
+                    Button {
+                        position = .region(MKCoordinateRegion(
+                            center: locationManager.posizione?.coordinate ?? CLLocationCoordinate2D(latitude: 44.4056, longitude: 8.9463),
+                            span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+                        ))
+                    } label: {
+                        Image(systemName: "location.fill")
+                                            .foregroundStyle(.white)
+                                            .padding(12)
+                                            .background(Color("Bordeaux"))
+                                            .clipShape(Circle())
+                    }
+                }
+                .padding(.horizontal, 20)
+                .padding(.bottom, 30)
             }
-            .padding(.bottom, 30)
         }
         .sheet(isPresented: $mostraVicinanze) {
             VicininzeView(ristoranti: viewModel.ristoranti)
@@ -47,6 +74,18 @@ struct ContentView: View {
             await viewModel.caricaRistoranti()
         }
     }
+
+    func cercaLocalita(_ testo: String) {
+            let geocoder = CLGeocoder()
+            geocoder.geocodeAddressString(testo) { placemark, error in
+                if let coordinate = placemark?.first?.location?.coordinate {
+                    position = .region(MKCoordinateRegion(
+                        center: coordinate,
+                        span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+                    ))
+                }
+            }
+        }
 }
 
 #Preview {
