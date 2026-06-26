@@ -8,14 +8,24 @@
 import SwiftUI
 
 struct ContentView: View {
+    @StateObject private var viewModel = RistoranteViewModel()
+
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        NavigationStack {
+            List(viewModel.ristoranti) { ristorante in
+                VStack(alignment: .leading) {
+                    Text(ristorante.nome)
+                        .font(.headline)
+                    Text(ristorante.indirizzo ?? "")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .navigationTitle("Ristooorante")
+            .task {
+                await viewModel.caricaRistoranti()
+            }
         }
-        .padding()
     }
 }
 
