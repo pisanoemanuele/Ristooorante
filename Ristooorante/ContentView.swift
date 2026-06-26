@@ -14,6 +14,7 @@ struct ContentView: View {
     @State private var position: MapCameraPosition = .userLocation(fallback: .region(MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 44.4056, longitude: 8.9463), span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1))))
     @State private var mostraVicinanze = false
     @State private var filtraVicinanze = false
+    @State private var ristoranteSelezionato: Ristorante? = nil
     @AppStorage("raggioVicinanze") var raggioVicinanze: Double = 5.0
     @State private var mostraImpostazioni = false
     @State private var cercaLocalita = ""
@@ -26,8 +27,11 @@ struct ContentView: View {
                 ForEach(viewModel.ristoranti) { ristorante in
                     if let lat = ristorante.lat, let lng = ristorante.lng {
                         Annotation(ristorante.nome, coordinate: CLLocationCoordinate2D(latitude: lat, longitude: lng)) {
-                            PinRistorante()
-                        }
+                                                    PinRistorante()
+                                                        .onTapGesture {
+                                                            ristoranteSelezionato = ristorante
+                                                        }
+                                                }
                     }
                 }
             }
@@ -91,6 +95,9 @@ struct ContentView: View {
         }
         .sheet(isPresented: $mostraImpostazioni) {
             ImpostazioniView()
+        }
+        .sheet(item: $ristoranteSelezionato) { ristorante in
+            SchedaRistoranteView(ristorante: ristorante, posizione: locationManager.posizione)
         }
         
         .task {
