@@ -43,7 +43,7 @@ struct CercaLocalitaView: View {
                 }
             }
             .padding(10)
-            .background(.white.opacity(0.9))
+            .background(.regularMaterial)
             .clipShape(RoundedRectangle(cornerRadius: 12))
             .padding(.horizontal, 60)
                             .padding(.top, 60)
@@ -73,7 +73,7 @@ struct CercaLocalitaView: View {
                         Divider()
                     }
                 }
-                .background(.white.opacity(0.95))
+                .background(.regularMaterial)
                 .clipShape(RoundedRectangle(cornerRadius: 12))
                 .padding(.horizontal, 16)
                 .padding(.top, 4)

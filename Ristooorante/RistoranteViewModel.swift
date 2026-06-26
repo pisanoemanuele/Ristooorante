@@ -15,7 +15,10 @@ class RistoranteViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var errorMessage: String?
 
-    func caricaRistoranti() async {
+    // DEBUG: funzione caricaTutti — usata dal bottone mappa in ContentView
+        // Per disattivare completamente: commenta la riga func qui sotto + il blocco Button in ContentView
+        func caricaTutti() async { isLoading = true; do { ristoranti = try await supabase.from("ristoranti").select().execute().value } catch { errorMessage = error.localizedDescription }; isLoading = false }
+        func caricaRistoranti() async {
         isLoading = true
         do {
             ristoranti = try await supabase

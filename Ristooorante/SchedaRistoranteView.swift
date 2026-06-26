@@ -14,6 +14,7 @@ struct SchedaRistoranteView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var mostraMenu = false
     @State private var mostraSito = false
+        @State private var mostraPrenotazione = false
 
     var coordinate: CLLocationCoordinate2D? {
         guard let lat = ristorante.lat, let lng = ristorante.lng else { return nil }
@@ -109,9 +110,9 @@ struct SchedaRistoranteView: View {
                                                         }
                                                     }
 
-                    Button {
-                        // prenotazione — prossimo step
-                    } label: {
+                                Button {
+                                                        mostraPrenotazione = true
+                                                    } label: {
                         Label("Prenota", systemImage: "calendar.badge.plus")
                             .font(.headline)
                             .foregroundStyle(.white)
@@ -124,7 +125,10 @@ struct SchedaRistoranteView: View {
                 .padding()
             }
         }
-        .ignoresSafeArea(edges: .bottom)
+        .sheet(isPresented: $mostraPrenotazione) {
+                    PrenotazioneView(ristorante: ristorante)
+                }
+                .ignoresSafeArea(edges: .bottom)
         .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {

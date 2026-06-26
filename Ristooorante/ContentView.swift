@@ -76,8 +76,35 @@ struct ContentView: View {
 
                     Spacer()
 
+                    // DEBUG: bottone "mostra tutti i ristoranti"
+                                        // Per disattivare: commenta il blocco Button qui sotto (da "Button {" fino a ".clipShape(Circle())")
+                                        // Per riattivare: togli il commento
                     Button {
-                        position = .region(MKCoordinateRegion(
+                                                                Task {
+                                                                    await viewModel.caricaTutti()
+                                                                    let coords = viewModel.ristoranti.compactMap { r -> CLLocationCoordinate2D? in
+                                                                        guard let lat = r.lat, let lng = r.lng else { return nil }
+                                                                        return CLLocationCoordinate2D(latitude: lat, longitude: lng)
+                                                                    }
+                                                                    guard !coords.isEmpty else { return }
+                                                                    let minLat = coords.map(\.latitude).min()!
+                                                                    let maxLat = coords.map(\.latitude).max()!
+                                                                    let minLng = coords.map(\.longitude).min()!
+                                                                    let maxLng = coords.map(\.longitude).max()!
+                                                                    let center = CLLocationCoordinate2D(latitude: (minLat + maxLat) / 2, longitude: (minLng + maxLng) / 2)
+                                                                    let span = MKCoordinateSpan(latitudeDelta: (maxLat - minLat) * 1.4, longitudeDelta: (maxLng - minLng) * 1.4)
+                                                                    position = .region(MKCoordinateRegion(center: center, span: span))
+                                                                }
+                                                            } label: {
+                                            Image(systemName: "map.fill")
+                                                .foregroundStyle(.white)
+                                                .padding(12)
+                                                .background(Color("Bordeaux"))
+                                                .clipShape(Circle())
+                                        }
+
+                                        Button {
+                                            position = .region(MKCoordinateRegion(
                             center: locationManager.posizione?.coordinate ?? CLLocationCoordinate2D(latitude: 44.4056, longitude: 8.9463),
                             span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
                         ))
