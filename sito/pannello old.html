@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pannello Ristooorante</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f7f4f1;
+      color: #1a1a1a;
+      min-height: 100vh;
+    }
+
+    /* HEADER */
+    header {
+      background: #9F022A;
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    header h1 {
+      color: white;
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+    header span {
+      color: rgba(255,255,255,0.75);
+      font-size: 13px;
+    }
+    #btn-logout {
+      background: rgba(255,255,255,0.15);
+      border: none;
+      color: white;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      cursor: pointer;
+      display: none;
+    }
+    #btn-logout:hover { background: rgba(255,255,255,0.25); }
+
+    /* SCHERMATE */
+    .schermata { display: none; padding: 24px 16px; max-width: 600px; margin: 0 auto; }
+    .schermata.attiva { display: block; }
+
+    /* LOGIN */
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 28px 24px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    }
+    .card h2 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: #1a1a1a;
+    }
+    .card p.sottotitolo {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 24px;
+    }
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #444;
+      margin-bottom: 6px;
+    }
+    input[type="email"], input[type="password"] {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.5px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 16px;
+      margin-bottom: 16px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input:focus { border-color: #9F022A; }
+    .btn-primario {
+      width: 100%;
+      background: #9F022A;
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .btn-primario:hover { opacity: 0.88; }
+    .btn-primario:disabled { opacity: 0.5; cursor: default; }
+    .errore {
+      background: #fff0f3;
+      border: 1px solid #ffc0cb;
+      color: #9F022A;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 14px;
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    /* PRENOTAZIONE SINGOLA (da link email) */
+    .ristorante-nome {
+      font-size: 13px;
+      font-weight: 600;
+      color: #9F022A;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 16px;
+    }
+    .dettaglio-riga {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 15px;
+    }
+    .dettaglio-riga:last-of-type { border-bottom: none; }
+    .dettaglio-label { color: #888; font-size: 13px; }
+    .dettaglio-valore { font-weight: 500; }
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .badge.in_attesa { background: #fff3cd; color: #856404; }
+    .badge.confermata { background: #d1f0e0; color: #1a7a45; }
+    .badge.rifiutata { background: #fde8e8; color: #9F022A; }
+    .bottoni-azione {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+    }
+    .btn-approva {
+      flex: 1;
+      background: #1a7a45;
+      color: white;
+      border: none;
+      padding: 13px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-rifiuta {
+      flex: 1;
+      background: white;
+      color: #9F022A;
+      border: 1.5px solid #9F022A;
+      padding: 13px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-approva:hover { opacity: 0.88; }
+    .btn-rifiuta:hover { background: #fff0f3; }
+    .messaggio-esito {
+      text-align: center;
+      padding: 20px 0;
+      font-size: 16px;
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+    .messaggio-esito.ok { color: #1a7a45; }
+    .messaggio-esito.ko { color: #9F022A; }
+
+    /* LISTA PRENOTAZIONI */
+    #nome-ristorante-header {
+      font-size: 13px;
+      font-weight: 600;
+      color: #9F022A;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 16px;
+    }
+    .filtri {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .filtro {
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      border: 1.5px solid #e0e0e0;
+      background: white;
+      color: #666;
+      cursor: pointer;
+    }
+    .filtro.attivo {
+      background: #9F022A;
+      color: white;
+      border-color: #9F022A;
+    }
+    .lista-vuota {
+      text-align: center;
+      color: #999;
+      padding: 40px 0;
+      font-size: 15px;
+    }
+    .card-prenotazione {
+      background: white;
+      border-radius: 14px;
+      padding: 16px 18px;
+      margin-bottom: 12px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+    }
+    .card-pren-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .card-pren-nome {
+      font-size: 16px;
+      font-weight: 700;
+    }
+    .card-pren-info {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 12px;
+    }
+    .card-pren-note {
+      font-size: 13px;
+      color: #444;
+      font-style: italic;
+      margin-bottom: 12px;
+    }
+    .card-pren-bottoni {
+      display: flex;
+      gap: 10px;
+    }
+    .card-pren-bottoni .btn-approva,
+    .card-pren-bottoni .btn-rifiuta {
+      padding: 9px 14px;
+      font-size: 13px;
+    }
+      .caricamento {
+            text-align: center;
+            color: #999;
+            padding: 40px 0;
+            font-size: 15px;
+          }
+
+          /* ORARI PROFILO */
+          .giorno-riga {
+            display: grid;
+            grid-template-columns: 90px 1fr;
+            align-items: start;
+            gap: 10px;
+            margin-bottom: 12px;
+          }
+          .giorno-nome {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            padding-top: 8px;
+          }
+          .giorno-fasce {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+          }
+          .fascia {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+          }
+          .fascia label {
+            font-size: 12px;
+            color: #888;
+            margin: 0;
+            font-weight: 500;
+            min-width: 40px;
+          }
+          .fascia input[type="time"] {
+            padding: 7px 10px;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            width: 100px;
+            outline: none;
+            margin-bottom: 0;
+          }
+          .fascia input[type="time"]:focus { border-color: #9F022A; }
+          .chiuso-wrap {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 2px;
+          }
+          .chiuso-wrap input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: #9F022A;
+          }
+          .chiuso-wrap label {
+            font-size: 13px;
+            color: #666;
+            margin: 0;
+            font-weight: 400;
+          }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>🍽 Ristooorante</h1>
+  <div id="btn-gruppo" style="display:none;gap:8px;display:none;align-items:center;">
+        <button id="btn-profilo" onclick="mostraSchermata('profilo')" style="background:rgba(255,255,255,0.15);border:none;color:white;padding:6px 14px;border-radius:8px;font-size:13px;cursor:pointer;">Profilo</button>
+        <button id="btn-prenotazioni" onclick="mostraSchermata('lista')" style="background:rgba(255,255,255,0.15);border:none;color:white;padding:6px 14px;border-radius:8px;font-size:13px;cursor:pointer;">Prenotazioni</button>
+        <button id="btn-logout" onclick="logout()">Esci</button>
+      </div>
+</header>
+
+<!-- SCHERMATA 1: LOGIN -->
+<div id="schermata-login" class="schermata attiva">
+  <div style="margin-top: 32px;">
+    <div class="card">
+      <h2>Accedi al pannello</h2>
+      <p class="sottotitolo">Gestisci le prenotazioni del tuo ristorante</p>
+      <div id="errore-login" class="errore"></div>
+      <label for="email">Email</label>
+      <input type="email" id="email" placeholder="la-tua@email.com" autocomplete="email">
+      <label for="password">Password</label>
+      <input type="password" id="password" placeholder="••••••••" autocomplete="current-password">
+      <button class="btn-primario" id="btn-login" onclick="login()">Accedi</button>
+    </div>
+  </div>
+</div>
+
+<!-- SCHERMATA 2: PRENOTAZIONE SINGOLA (da link email) -->
+<div id="schermata-singola" class="schermata">
+  <div style="margin-top: 24px;">
+    <div class="card" id="contenuto-singola">
+      <p class="caricamento">Caricamento prenotazione…</p>
+    </div>
+  </div>
+</div>
+
+<!-- SCHERMATA APPROVAZIONE RISTORANTE -->
+<div id="schermata-approva" class="schermata">
+  <div style="margin-top: 24px;">
+    <div class="card" id="contenuto-approva">
+      <p class="caricamento">Caricamento...</p>
+    </div>
+  </div>
+</div>
+
+<!-- SCHERMATA 4: PROFILO -->
+<div id="schermata-profilo" class="schermata">
+  <div style="margin-top: 24px;">
+    <div class="card" style="margin-bottom: 20px;">
+      <h2 style="margin-bottom: 6px;">Il mio ristorante</h2>
+      <p class="sottotitolo">Modifica i dati del tuo ristorante</p>
+      <div id="errore-profilo" class="errore"></div>
+      <div id="campi-profilo"></div>
+      <button class="btn-primario" style="margin-top: 8px;" onclick="salvaProfilo()">Salva modifiche</button>
+    </div>
+    <div class="card">
+      <h2 style="margin-bottom: 6px;">Cambia password</h2>
+      <p class="sottotitolo">Scegli una nuova password per accedere al pannello</p>
+      <div id="errore-password" class="errore"></div>
+      <label for="pw-nuova">Nuova password</label>
+      <input type="password" id="pw-nuova" placeholder="Minimo 8 caratteri">
+      <label for="pw-conferma">Conferma password</label>
+      <input type="password" id="pw-conferma" placeholder="Ripeti la nuova password">
+      <button class="btn-primario" onclick="cambiaPassword()">Aggiorna password</button>
+    </div>
+  </div>
+</div>
+
+<!-- SCHERMATA 3: LISTA PRENOTAZIONI -->
+<div id="schermata-lista" class="schermata">
+  <div style="margin-top: 24px;">
+    <div id="nome-ristorante-header"></div>
+    <div class="filtri">
+      <button class="filtro attivo" onclick="filtra('tutte', this)">Tutte</button>
+      <button class="filtro" onclick="filtra('in_attesa', this)">In attesa</button>
+      <button class="filtro" onclick="filtra('confermata', this)">Confermate</button>
+      <button class="filtro" onclick="filtra('rifiutata', this)">Rifiutate</button>
+    </div>
+    <div id="lista-prenotazioni">
+      <p class="caricamento">Caricamento prenotazioni…</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  const SUPABASE_URL = 'https://ljwvzicrgzjzqcnqtvxb.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxqd3Z6aWNyZ3pqenFjbnF0dnhiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0NzY0NzEsImV4cCI6MjA5ODA1MjQ3MX0.50JBT3-rFNbqMJzuqfKtyr2-pnGfejPcwW6ANJypCK0';
+
+  let sessionToken = null;
+  let tutteLePrenotazioni = [];
+
+  // --- AVVIO ---
+  window.onload = () => {
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('id');
+    const approva = params.get('approva');
+    if (approva) {
+      mostraSchermata('approva');
+      gestisciApprovazione(approva);
+    } else if (id) {
+      mostraSchermata('singola');
+      caricaPrenotazioneSingola(id);
+    }
+    // altrimenti rimane sul login
+  };
+
+  // --- NAVIGAZIONE ---
+  function mostraSchermata(nome) {
+    document.querySelectorAll('.schermata').forEach(s => s.classList.remove('attiva'));
+    document.getElementById('schermata-' + nome).classList.add('attiva');
+  }
+
+  // --- LOGIN ---
+  async function login() {
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const errore = document.getElementById('errore-login');
+    const btn = document.getElementById('btn-login');
+
+    errore.style.display = 'none';
+    btn.disabled = true;
+    btn.textContent = 'Accesso in corso…';
+
+    try {
+      const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_ANON_KEY
+        },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        errore.textContent = 'Email o password non corretti.';
+        errore.style.display = 'block';
+        btn.disabled = false;
+        btn.textContent = 'Accedi';
+        return;
+      }
+
+      sessionToken = data.access_token;
+            const userId = data.user.id;
+            document.getElementById('btn-gruppo').style.display = 'flex';
+
+            await caricaListaPrenotazioni(userId);
+                  await caricaProfilo(userId);
+                  mostraSchermata('lista');
+
+    } catch (e) {
+      errore.textContent = 'Errore di connessione. Riprova.';
+      errore.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = 'Accedi';
+    }
+  }
+
+  // --- LOGOUT ---
+  function logout() {
+    sessionToken = null;
+    tutteLePrenotazioni = [];
+    document.getElementById('btn-gruppo').style.display = 'none';
+    document.getElementById('email').value = '';
+    document.getElementById('password').value = '';
+    document.getElementById('btn-login').disabled = false;
+    document.getElementById('btn-login').textContent = 'Accedi';
+    mostraSchermata('login');
+  }
+
+  // --- LISTA PRENOTAZIONI ---
+  async function caricaListaPrenotazioni(userId) {
+    // Prima troviamo il ristorante del proprietario
+    const resRist = await fetch(
+      `${SUPABASE_URL}/rest/v1/ristoranti?proprietario_id=eq.${userId}&select=id,nome`,
+      {
+        headers: {
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${sessionToken}`
+        }
+      }
+    );
+    const ristoranti = await resRist.json();
+
+    if (!ristoranti.length) {
+      document.getElementById('lista-prenotazioni').innerHTML =
+        '<p class="lista-vuota">Nessun ristorante associato a questo account.</p>';
+      return;
+    }
+
+    // Mostra il nome del ristorante in alto
+    const nomi = ristoranti.map(r => r.nome).join(', ');
+    document.getElementById('nome-ristorante-header').textContent = nomi;
+
+    // Carica le prenotazioni di tutti i suoi ristoranti
+    const ids = ristoranti.map(r => `"${r.id}"`).join(',');
+    const resPren = await fetch(
+      `${SUPABASE_URL}/rest/v1/prenotazioni?ristorante_id=in.(${ids})&order=data.desc,ora.desc&select=*`,
+      {
+        headers: {
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${sessionToken}`
+        }
+      }
+    );
+    tutteLePrenotazioni = await resPren.json();
+    renderLista(tutteLePrenotazioni);
+  }
+
+  function filtra(stato, el) {
+    document.querySelectorAll('.filtro').forEach(f => f.classList.remove('attivo'));
+    el.classList.add('attivo');
+    if (stato === 'tutte') {
+      renderLista(tutteLePrenotazioni);
+    } else {
+      renderLista(tutteLePrenotazioni.filter(p => p.stato === stato));
+    }
+  }
+
+  function renderLista(prenotazioni) {
+    const contenitore = document.getElementById('lista-prenotazioni');
+    if (!prenotazioni.length) {
+      contenitore.innerHTML = '<p class="lista-vuota">Nessuna prenotazione.</p>';
+      return;
+    }
+
+    contenitore.innerHTML = prenotazioni.map(p => {
+      const data = new Date(p.data).toLocaleDateString('it-IT', {
+        weekday: 'long', day: 'numeric', month: 'long'
+      });
+      const badgeClass = p.stato || 'in_attesa';
+      const badgeLabel = { in_attesa: 'In attesa', confermata: 'Confermata', rifiutata: 'Rifiutata' }[badgeClass] || badgeClass;
+      const bottoni = p.stato === 'in_attesa' ? `
+        <div class="card-pren-bottoni">
+          <button class="btn-approva" onclick="aggiorna('${p.id}', 'confermata', this)">✓ Approva</button>
+          <button class="btn-rifiuta" onclick="aggiorna('${p.id}', 'rifiutata', this)">✕ Rifiuta</button>
+        </div>` : '';
+      const note = p.note ? `<p class="card-pren-note">📝 ${p.note}</p>` : '';
+
+      return `
+        <div class="card-prenotazione" id="pren-${p.id}">
+          <div class="card-pren-header">
+            <span class="card-pren-nome">${p.nome_cliente}</span>
+            <span class="badge ${badgeClass}">${badgeLabel}</span>
+          </div>
+          <p class="card-pren-info">📅 ${data} alle ${p.ora?.slice(0,5)} · 👥 ${p.coperti} coperti</p>
+          <p class="card-pren-info">✉️ ${p.email_cliente || '—'}</p>
+          ${note}
+          ${bottoni}
+        </div>`;
+    }).join('');
+  }
+
+  // --- PRENOTAZIONE SINGOLA (da link email) ---
+  async function caricaPrenotazioneSingola(id) {
+    const contenuto = document.getElementById('contenuto-singola');
+    try {
+      const res = await fetch(
+        `${SUPABASE_URL}/rest/v1/prenotazioni?id=eq.${id}&select=*,ristoranti(nome)`,
+        {
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+          }
+        }
+      );
+      const data = await res.json();
+
+      if (!data.length) {
+        contenuto.innerHTML = '<p class="caricamento">Prenotazione non trovata.</p>';
+        return;
+      }
+
+      const p = data[0];
+      const nomeRistorante = p.ristoranti?.nome || '';
+      const data_fmt = new Date(p.data).toLocaleDateString('it-IT', {
+        weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+      });
+      const badgeClass = p.stato || 'in_attesa';
+      const badgeLabel = { in_attesa: 'In attesa', confermata: 'Confermata', rifiutata: 'Rifiutata' }[badgeClass] || badgeClass;
+
+      let bottoni = '';
+      if (p.stato === 'in_attesa') {
+        bottoni = `
+          <div class="bottoni-azione">
+            <button class="btn-approva" onclick="aggiornaSingola('${p.id}', 'confermata')">✓ Approva</button>
+            <button class="btn-rifiuta" onclick="aggiornaSingola('${p.id}', 'rifiutata')">✕ Rifiuta</button>
+          </div>`;
+      }
+
+      contenuto.innerHTML = `
+        <p class="ristorante-nome">${nomeRistorante}</p>
+        <div class="dettaglio-riga">
+          <span class="dettaglio-label">Stato</span>
+          <span><span class="badge ${badgeClass}">${badgeLabel}</span></span>
+        </div>
+        <div class="dettaglio-riga">
+          <span class="dettaglio-label">Cliente</span>
+          <span class="dettaglio-valore">${p.nome_cliente}</span>
+        </div>
+        <div class="dettaglio-riga">
+          <span class="dettaglio-label">Data</span>
+          <span class="dettaglio-valore">${data_fmt}</span>
+        </div>
+        <div class="dettaglio-riga">
+          <span class="dettaglio-label">Ora</span>
+          <span class="dettaglio-valore">${p.ora?.slice(0,5)}</span>
+        </div>
+        <div class="dettaglio-riga">
+          <span class="dettaglio-label">Coperti</span>
+          <span class="dettaglio-valore">${p.coperti}</span>
+        </div>
+        <div class="dettaglio-riga">
+          <span class="dettaglio-label">Email</span>
+          <span class="dettaglio-valore">${p.email_cliente || '—'}</span>
+        </div>
+        ${p.note ? `<div class="dettaglio-riga"><span class="dettaglio-label">Note</span><span class="dettaglio-valore">${p.note}</span></div>` : ''}
+        ${bottoni}
+      `;
+    } catch(e) {
+      contenuto.innerHTML = '<p class="caricamento">Errore nel caricamento.</p>';
+    }
+  }
+
+  async function aggiornaSingola(id, stato) {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/prenotazioni?id=eq.${id}`, {
+      method: 'PATCH',
+      headers: {
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify({ stato })
+    });
+    const label = stato === 'confermata' ? 'Prenotazione confermata ✓' : 'Prenotazione rifiutata.';
+    const cls = stato === 'confermata' ? 'ok' : 'ko';
+    document.getElementById('contenuto-singola').innerHTML += `
+      <p class="messaggio-esito ${cls}">${label}</p>
+      <p style="text-align:center;color:#999;font-size:13px;margin-top:8px;">Puoi chiudere questa pagina.</p>
+    `;
+    document.querySelector('.bottoni-azione')?.remove();
+  }
+
+  // --- AGGIORNA DA LISTA ---
+  async function aggiorna(id, stato, btn) {
+    btn.disabled = true;
+    const card = document.getElementById('pren-' + id);
+    await fetch(`${SUPABASE_URL}/rest/v1/prenotazioni?id=eq.${id}`, {
+      method: 'PATCH',
+      headers: {
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': `Bearer ${sessionToken}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify({ stato })
+    });
+    // Aggiorna il badge nella card senza ricaricare tutto
+    const badgeLabel = stato === 'confermata' ? 'Confermata' : 'Rifiutata';
+    card.querySelector('.badge').className = `badge ${stato}`;
+    card.querySelector('.badge').textContent = badgeLabel;
+    card.querySelector('.card-pren-bottoni')?.remove();
+    // Aggiorna anche l'array locale
+    const pren = tutteLePrenotazioni.find(p => p.id === id);
+    if (pren) pren.stato = stato;
+  }
+
+    // --- PROFILO ---
+      let ristoranteCorrenteId = null;
+
+      async function caricaProfilo(userId) {
+        const res = await fetch(
+          `${SUPABASE_URL}/rest/v1/ristoranti?proprietario_id=eq.${userId}&select=*`,
+          {
+            headers: {
+              'apikey': SUPABASE_ANON_KEY,
+              'Authorization': `Bearer ${sessionToken}`
+            }
+          }
+        );
+        const data = await res.json();
+        if (!data.length) return;
+        const r = data[0];
+        ristoranteCorrenteId = r.id;
+
+        const GIORNI = ['Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato','Domenica'];
+            const orari = r.orari || {};
+
+            const righeOrari = GIORNI.map((g, i) => {
+              const giorno = orari[g] || {};
+              const chiuso = giorno.chiuso === true;
+              const pranzoAp = giorno.pranzo?.apertura || '12:00';
+              const pranzoChiusura = giorno.pranzo?.chiusura || '15:00';
+              const cenaAp = giorno.cena?.apertura || '19:00';
+              const cenaChiusura = giorno.cena?.chiusura || '23:00';
+              return `
+                <div class="giorno-riga">
+                  <span class="giorno-nome">${g}</span>
+                  <div class="giorno-fasce" id="profilo-fasce-${i}">
+                    <div class="fascia">
+                      <label>Pranzo</label>
+                      <input type="time" id="profilo-pranzo-ap-${i}" value="${pranzoAp}" ${chiuso ? 'disabled style="opacity:0.3"' : ''}>
+                      <span style="color:#999;font-size:13px">–</span>
+                      <input type="time" id="profilo-pranzo-ch-${i}" value="${pranzoChiusura}" ${chiuso ? 'disabled style="opacity:0.3"' : ''}>
+                    </div>
+                    <div class="fascia">
+                      <label>Cena</label>
+                      <input type="time" id="profilo-cena-ap-${i}" value="${cenaAp}" ${chiuso ? 'disabled style="opacity:0.3"' : ''}>
+                      <span style="color:#999;font-size:13px">–</span>
+                      <input type="time" id="profilo-cena-ch-${i}" value="${cenaChiusura}" ${chiuso ? 'disabled style="opacity:0.3"' : ''}>
+                    </div>
+                    <div class="chiuso-wrap">
+                      <input type="checkbox" id="profilo-chiuso-${i}" ${chiuso ? 'checked' : ''} onchange="toggleChiusoProfilo(${i})">
+                      <label for="profilo-chiuso-${i}">Chiuso</label>
+                    </div>
+                  </div>
+                </div>
+                ${i < 6 ? '<hr style="border:none;border-top:1px solid #f0f0f0;margin:4px 0 12px">' : ''}
+              `;
+            }).join('');
+
+            document.getElementById('campi-profilo').innerHTML = `
+              <label>Nome ristorante</label>
+              <input type="text" id="profilo-nome" value="${r.nome || ''}">
+              <label>Indirizzo</label>
+              <input type="text" id="profilo-indirizzo" value="${r.indirizzo || ''}">
+              <label>Telefono</label>
+              <input type="text" id="profilo-telefono" value="${r.telefono || ''}">
+              <label>Sito web</label>
+              <input type="text" id="profilo-sito" value="${r.sito_web || ''}">
+              <label>Link menu menuplus</label>
+              <input type="text" id="profilo-menu" value="${r.url_menu || ''}">
+              <label style="margin-top:16px;">Orari di apertura</label>
+              <div style="margin-top:8px;">${righeOrari}</div>
+            `;
+      }
+
+    function toggleChiusoProfilo(i) {
+        const chiuso = document.getElementById(`profilo-chiuso-${i}`).checked;
+        const inputs = document.querySelectorAll(`#profilo-fasce-${i} input[type="time"]`);
+        inputs.forEach(inp => {
+          inp.disabled = chiuso;
+          inp.style.opacity = chiuso ? '0.3' : '1';
+        });
+      }
+
+      function raccogliOrariProfilo() {
+        const GIORNI = ['Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato','Domenica'];
+        const orari = {};
+        GIORNI.forEach((g, i) => {
+          const chiuso = document.getElementById(`profilo-chiuso-${i}`).checked;
+          if (chiuso) {
+            orari[g] = { chiuso: true };
+          } else {
+            orari[g] = {
+              pranzo: {
+                apertura: document.getElementById(`profilo-pranzo-ap-${i}`).value,
+                chiusura: document.getElementById(`profilo-pranzo-ch-${i}`).value
+              },
+              cena: {
+                apertura: document.getElementById(`profilo-cena-ap-${i}`).value,
+                chiusura: document.getElementById(`profilo-cena-ch-${i}`).value
+              }
+            };
+          }
+        });
+        return orari;
+      }
+
+      async function salvaProfilo() {
+        const errore = document.getElementById('errore-profilo');
+        errore.style.display = 'none';
+
+        const nome = document.getElementById('profilo-nome').value.trim();
+        const indirizzo = document.getElementById('profilo-indirizzo').value.trim();
+        const telefono = document.getElementById('profilo-telefono').value.trim();
+        const sito_web = document.getElementById('profilo-sito').value.trim();
+        const url_menu = document.getElementById('profilo-menu').value.trim();
+
+        if (!nome || !indirizzo || !telefono) {
+          errore.textContent = 'Nome, indirizzo e telefono sono obbligatori.';
+          errore.style.display = 'block';
+          return;
+        }
+
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/ristoranti?id=eq.${ristoranteCorrenteId}`, {
+          method: 'PATCH',
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${sessionToken}`,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=minimal'
+          },
+          body: JSON.stringify({ nome, indirizzo, telefono, sito_web: sito_web || null, url_menu: url_menu || null, orari: raccogliOrariProfilo() })
+        });
+
+        if (res.ok) {
+          errore.style.background = '#d1f0e0';
+          errore.style.borderColor = '#a8d5b5';
+          errore.style.color = '#1a7a45';
+          errore.textContent = '✓ Modifiche salvate.';
+          errore.style.display = 'block';
+        } else {
+          errore.textContent = 'Errore nel salvataggio. Riprova.';
+          errore.style.display = 'block';
+        }
+      }
+
+      async function cambiaPassword() {
+        const errore = document.getElementById('errore-password');
+        errore.style.display = 'none';
+        errore.style.background = '';
+        errore.style.borderColor = '';
+        errore.style.color = '';
+
+        const pwNuova = document.getElementById('pw-nuova').value;
+        const pwConferma = document.getElementById('pw-conferma').value;
+
+        if (pwNuova.length < 8) {
+          errore.textContent = 'La password deve essere di almeno 8 caratteri.';
+          errore.style.display = 'block';
+          return;
+        }
+        if (pwNuova !== pwConferma) {
+          errore.textContent = 'Le password non coincidono.';
+          errore.style.display = 'block';
+          return;
+        }
+
+        const res = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+          method: 'PUT',
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${sessionToken}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ password: pwNuova })
+        });
+
+        if (res.ok) {
+          errore.style.background = '#d1f0e0';
+          errore.style.borderColor = '#a8d5b5';
+          errore.style.color = '#1a7a45';
+          errore.textContent = '✓ Password aggiornata.';
+          errore.style.display = 'block';
+          document.getElementById('pw-nuova').value = '';
+          document.getElementById('pw-conferma').value = '';
+        } else {
+          errore.textContent = 'Errore nell\'aggiornamento. Riprova.';
+          errore.style.display = 'block';
+        }
+      }
+
+      // --- APPROVAZIONE RISTORANTE ---
+  async function gestisciApprovazione(id) {
+    const contenuto = document.getElementById('contenuto-approva');
+    try {
+      // Carica dati ristorante
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/ristoranti?id=eq.${id}&select=*`, {
+        headers: {
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+        }
+      });
+      const data = await res.json();
+      if (!data.length) {
+        contenuto.innerHTML = '<p class="caricamento">Ristorante non trovato.</p>';
+        return;
+      }
+      const r = data[0];
+
+      if (r.approvato) {
+        contenuto.innerHTML = `
+          <p class="ristorante-nome">${r.nome}</p>
+          <p class="messaggio-esito ok">✓ Già approvato</p>
+        `;
+        return;
+      }
+
+      contenuto.innerHTML = `
+        <p class="ristorante-nome">Nuova registrazione</p>
+        <div class="dettaglio-riga"><span class="dettaglio-label">Nome</span><span class="dettaglio-valore">${r.nome}</span></div>
+        <div class="dettaglio-riga"><span class="dettaglio-label">Referente</span><span class="dettaglio-valore">${r.nome_referente || '—'}</span></div>
+        <div class="dettaglio-riga"><span class="dettaglio-label">Indirizzo</span><span class="dettaglio-valore">${r.indirizzo}</span></div>
+        <div class="dettaglio-riga"><span class="dettaglio-label">Telefono</span><span class="dettaglio-valore">${r.telefono}</span></div>
+        <div class="dettaglio-riga"><span class="dettaglio-label">Partita IVA</span><span class="dettaglio-valore">${r.partita_iva || '—'}</span></div>
+        <div class="dettaglio-riga"><span class="dettaglio-label">Sito web</span><span class="dettaglio-valore">${r.sito_web || '—'}</span></div>
+        <div class="dettaglio-riga"><span class="dettaglio-label">Menu</span><span class="dettaglio-valore">${r.url_menu || '—'}</span></div>
+        <div class="bottoni-azione" style="margin-top:20px;">
+          <button class="btn-approva" onclick="approvaRistorante('${r.id}')">✓ Approva</button>
+        </div>
+      `;
+    } catch(e) {
+      contenuto.innerHTML = '<p class="caricamento">Errore nel caricamento.</p>';
+    }
+  }
+
+  async function approvaRistorante(id) {
+    await fetch(`${SUPABASE_URL}/rest/v1/ristoranti?id=eq.${id}`, {
+      method: 'PATCH',
+      headers: {
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify({ approvato: true })
+    });
+    document.getElementById('contenuto-approva').innerHTML = `
+      <p class="messaggio-esito ok" style="text-align:center;padding:30px 0;">✓ Ristorante approvato!<br><span style="font-size:13px;color:#666;font-weight:400;margin-top:8px;display:block;">Apparirà nell'app da subito.</span></p>
+    `;
+  }
+</script>
+</body>
+</html>

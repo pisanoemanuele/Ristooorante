@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registra il tuo ristorante — Ristooorante</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f7f4f1;
+      color: #1a1a1a;
+      min-height: 100vh;
+    }
+
+    header {
+      background: #9F022A;
+      padding: 18px 24px;
+    }
+    header h1 {
+      color: white;
+      font-size: 20px;
+      font-weight: 700;
+    }
+    header p {
+      color: rgba(255,255,255,0.75);
+      font-size: 13px;
+      margin-top: 2px;
+    }
+
+    .contenuto {
+      max-width: 620px;
+      margin: 0 auto;
+      padding: 24px 16px 60px;
+    }
+
+    .avviso {
+      background: #fff8e1;
+      border: 1px solid #ffe082;
+      border-radius: 12px;
+      padding: 14px 16px;
+      font-size: 14px;
+      color: #5a4a00;
+      margin-bottom: 24px;
+      line-height: 1.5;
+    }
+
+    .sezione {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+      margin-bottom: 20px;
+    }
+    .sezione h2 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #9F022A;
+      margin-bottom: 18px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .campo {
+      margin-bottom: 16px;
+    }
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #444;
+      margin-bottom: 6px;
+    }
+    label span.opzionale {
+      font-weight: 400;
+      color: #999;
+      margin-left: 4px;
+    }
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="tel"] {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.5px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 15px;
+      outline: none;
+      transition: border-color 0.2s;
+      background: white;
+    }
+    input:focus { border-color: #9F022A; }
+    .hint {
+      font-size: 12px;
+      color: #999;
+      margin-top: 5px;
+      line-height: 1.4;
+    }
+    .hint a { color: #9F022A; }
+
+    /* ORARI */
+    .giorno-riga {
+      display: grid;
+      grid-template-columns: 90px 1fr;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .giorno-nome {
+      font-size: 14px;
+      font-weight: 600;
+      color: #333;
+    }
+    .giorno-fasce {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .fascia {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .fascia label {
+      font-size: 12px;
+      color: #888;
+      margin: 0;
+      font-weight: 500;
+      min-width: 40px;
+    }
+    .fascia input[type="time"] {
+      padding: 7px 10px;
+      border: 1.5px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 14px;
+      width: 100px;
+      outline: none;
+    }
+    .fascia input[type="time"]:focus { border-color: #9F022A; }
+    .chiuso-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 4px;
+    }
+    .chiuso-wrap input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: #9F022A;
+    }
+    .chiuso-wrap label {
+      font-size: 13px;
+      color: #666;
+      margin: 0;
+      font-weight: 400;
+    }
+
+    /* BOTTONE */
+    .btn-invia {
+      width: 100%;
+      background: #9F022A;
+      color: white;
+      border: none;
+      padding: 16px;
+      border-radius: 12px;
+      font-size: 17px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      margin-top: 8px;
+    }
+    .btn-invia:hover { opacity: 0.88; }
+    .btn-invia:disabled { opacity: 0.5; cursor: default; }
+
+    .errore {
+      background: #fff0f3;
+      border: 1px solid #ffc0cb;
+      color: #9F022A;
+      padding: 12px 16px;
+      border-radius: 10px;
+      font-size: 14px;
+      margin-bottom: 16px;
+      display: none;
+      line-height: 1.5;
+    }
+
+    .successo {
+      text-align: center;
+      padding: 40px 20px;
+      display: none;
+    }
+    .successo .icona { font-size: 56px; margin-bottom: 16px; }
+    .successo h2 { font-size: 22px; font-weight: 700; margin-bottom: 10px; }
+    .successo p { font-size: 15px; color: #666; line-height: 1.6; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>🍽 Ristooorante</h1>
+  <p>Registra il tuo ristorante</p>
+</header>
+
+<div class="contenuto">
+
+  <div id="form-completo">
+
+    <div class="avviso">
+      ⏱ La verifica del tuo ristorante richiede <strong>1-2 giorni lavorativi</strong>. Controlleremo i tuoi dati e ti contatteremo via email appena approvato. Ci scusiamo per l'attesa!
+    </div>
+
+    <div id="errore-globale" class="errore"></div>
+
+    <!-- SEZIONE 1: DATI RISTORANTE -->
+    <div class="sezione">
+      <h2>📍 Il tuo ristorante</h2>
+
+      <div class="campo">
+        <label for="nome">Nome del ristorante</label>
+        <input type="text" id="nome" placeholder="Es. Trattoria da Mario">
+      </div>
+
+      <div class="campo">
+        <label for="indirizzo">Indirizzo completo</label>
+        <input type="text" id="indirizzo" placeholder="Via Roma 1, 16100 Genova GE">
+        <p class="hint">Inserisci l'indirizzo completo con città e CAP</p>
+      </div>
+
+      <div class="campo">
+        <label for="telefono">Telefono</label>
+        <input type="tel" id="telefono" placeholder="010 123456">
+      </div>
+
+      <div class="campo">
+        <label for="sito_web">Sito web <span class="opzionale">(opzionale)</span></label>
+        <input type="text" id="sito_web" placeholder="https://www.ilmioristorante.it">
+      </div>
+
+      <div class="campo">
+        <label for="url_menu">Link menu digitale menuplus.biz <span class="opzionale">(opzionale)</span></label>
+        <input type="text" id="url_menu" placeholder="https://menuplus.biz/m/xxxxx">
+        <p class="hint">Non hai ancora il menu digitale? <a href="https://menuplus.biz" target="_blank">Acquistalo su menuplus.biz</a> — oppure vai avanti senza.</p>
+      </div>
+
+      <div class="campo">
+        <label for="nome_referente">Nome e cognome del referente</label>
+        <input type="text" id="nome_referente" placeholder="Es. Mario Rossi">
+        <p class="hint">Il proprietario o gestore del ristorante</p>
+      </div>
+
+      <div class="campo">
+        <label for="partita_iva">Partita IVA</label>
+        <input type="text" id="partita_iva" placeholder="12345678901" maxlength="11">
+        <p class="hint">Necessaria per verificare l'esistenza del ristorante</p>
+      </div>
+    </div>
+
+    <!-- SEZIONE 2: ORARI -->
+    <div class="sezione">
+      <h2>🕐 Orari di apertura</h2>
+
+      <div id="orari-container"></div>
+    </div>
+
+    <!-- SEZIONE 3: ACCOUNT -->
+    <div class="sezione">
+      <h2>🔐 Crea il tuo account</h2>
+      <p style="font-size:14px;color:#666;margin-bottom:18px;">Userai queste credenziali per accedere al pannello e gestire le prenotazioni.</p>
+
+      <div class="campo">
+        <label for="email">Email</label>
+        <input type="email" id="email" placeholder="la-tua@email.com">
+      </div>
+
+      <div class="campo">
+              <label for="password">Password</label>
+              <input type="password" id="password" placeholder="Minimo 8 caratteri">
+            </div>
+
+            <div class="campo">
+              <label for="password2">Conferma password</label>
+              <input type="password" id="password2" placeholder="Ripeti la password">
+            </div>
+          </div>
+
+    <button class="btn-invia" id="btn-invia" onclick="invia()">Registra il mio ristorante</button>
+
+  </div>
+
+  <!-- MESSAGGIO DI SUCCESSO -->
+  <div class="successo" id="messaggio-successo">
+    <div class="icona">🎉</div>
+    <h2>Richiesta inviata!</h2>
+    <p>Abbiamo ricevuto i dati del tuo ristorante.<br>Verificheremo tutto entro <strong>1-2 giorni lavorativi</strong> e ti scriveremo all'email che hai indicato.<br><br>Grazie per aver scelto Ristooorante!</p>
+  </div>
+
+</div>
+
+<script>
+  const SUPABASE_URL = 'https://ljwvzicrgzjzqcnqtvxb.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxqd3Z6aWNyZ3pqenFjbnF0dnhiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0NzY0NzEsImV4cCI6MjA5ODA1MjQ3MX0.50JBT3-rFNbqMJzuqfKtyr2-pnGfejPcwW6ANJypCK0';
+
+  const GIORNI = ['Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato','Domenica'];
+
+  // Costruisce la UI degli orari
+  function costruisciOrari() {
+    const container = document.getElementById('orari-container');
+    container.innerHTML = GIORNI.map((g, i) => `
+      <div class="giorno-riga">
+        <span class="giorno-nome">${g}</span>
+        <div class="giorno-fasce" id="fasce-${i}">
+          <div class="fascia">
+            <label>Pranzo</label>
+            <input type="time" id="pranzo-ap-${i}" value="12:00">
+            <span style="color:#999;font-size:13px">–</span>
+            <input type="time" id="pranzo-ch-${i}" value="15:00">
+          </div>
+          <div class="fascia">
+            <label>Cena</label>
+            <input type="time" id="cena-ap-${i}" value="19:00">
+            <span style="color:#999;font-size:13px">–</span>
+            <input type="time" id="cena-ch-${i}" value="23:00">
+          </div>
+          <div class="chiuso-wrap">
+            <input type="checkbox" id="chiuso-${i}" onchange="toggleChiuso(${i})">
+            <label for="chiuso-${i}">Chiuso</label>
+          </div>
+        </div>
+      </div>
+      ${i < 6 ? '<hr style="border:none;border-top:1px solid #f0f0f0;margin:4px 0 12px">' : ''}
+    `).join('');
+  }
+
+  function toggleChiuso(i) {
+    const chiuso = document.getElementById(`chiuso-${i}`).checked;
+    const inputs = document.querySelectorAll(`#fasce-${i} input[type="time"]`);
+    inputs.forEach(inp => {
+      inp.disabled = chiuso;
+      inp.style.opacity = chiuso ? '0.3' : '1';
+    });
+  }
+
+  function raccogliOrari() {
+    const orari = {};
+    GIORNI.forEach((g, i) => {
+      const chiuso = document.getElementById(`chiuso-${i}`).checked;
+      if (chiuso) {
+        orari[g] = { chiuso: true };
+      } else {
+        orari[g] = {
+          pranzo: {
+            apertura: document.getElementById(`pranzo-ap-${i}`).value,
+            chiusura: document.getElementById(`pranzo-ch-${i}`).value
+          },
+          cena: {
+            apertura: document.getElementById(`cena-ap-${i}`).value,
+            chiusura: document.getElementById(`cena-ch-${i}`).value
+          }
+        };
+      }
+    });
+    return orari;
+  }
+
+  // Geocodifica l'indirizzo tramite Nominatim (OpenStreetMap, gratuito)
+  async function geocodifica(indirizzo) {
+    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(indirizzo)}&limit=1`;
+    const res = await fetch(url, { headers: { 'Accept-Language': 'it' } });
+    const data = await res.json();
+    if (data.length) {
+      return { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) };
+    }
+    return null;
+  }
+
+  async function invia() {
+    const errore = document.getElementById('errore-globale');
+    const btn = document.getElementById('btn-invia');
+    errore.style.display = 'none';
+
+    const nome = document.getElementById('nome').value.trim();
+    const indirizzo = document.getElementById('indirizzo').value.trim();
+    const telefono = document.getElementById('telefono').value.trim();
+    const sito_web = document.getElementById('sito_web').value.trim();
+    const url_menu = document.getElementById('url_menu').value.trim();
+    const nome_referente = document.getElementById('nome_referente').value.trim();
+    const partita_iva = document.getElementById('partita_iva').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+
+    // Validazione
+    if (!nome || !indirizzo || !telefono || !nome_referente || !partita_iva || !email || !password) {
+      errore.textContent = 'Compila tutti i campi obbligatori.';
+      errore.style.display = 'block';
+      return;
+    }
+    if (password.length < 8) {
+          errore.textContent = 'La password deve essere di almeno 8 caratteri.';
+          errore.style.display = 'block';
+          return;
+        }
+        const password2 = document.getElementById('password2').value;
+        if (password !== password2) {
+          errore.textContent = 'Le password non coincidono.';
+          errore.style.display = 'block';
+          return;
+        }
+    if (url_menu && !url_menu.startsWith('https://menuplus.biz/m/')) {
+      errore.textContent = 'Il link del menu deve essere un link menuplus.biz valido (es. https://menuplus.biz/m/xxxxx). Se non hai menuplus lascia il campo vuoto.';
+      errore.style.display = 'block';
+      return;
+    }
+    if (partita_iva.length !== 11 || !/^\d+$/.test(partita_iva)) {
+      errore.textContent = 'La partita IVA deve essere di 11 cifre.';
+      errore.style.display = 'block';
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Invio in corso…';
+
+    try {
+        // 1. Geocodifica indirizzo
+              btn.textContent = 'Ricerca coordinate…';
+              const coords = await geocodifica(indirizzo);
+              if (!coords) {
+                errore.textContent = 'Indirizzo non trovato. Controlla di averlo scritto correttamente con via, numero civico, città e CAP.';
+                errore.style.display = 'block';
+                btn.disabled = false;
+                btn.textContent = 'Registra il mio ristorante';
+                return;
+              }
+
+      // 2. Crea account Supabase Auth
+      btn.textContent = 'Creazione account…';
+      const resAuth = await fetch(`${SUPABASE_URL}/auth/v1/signup`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_ANON_KEY
+        },
+        body: JSON.stringify({ email, password })
+      });
+      const dataAuth = await resAuth.json();
+
+      if (!resAuth.ok) {
+        throw new Error(dataAuth.msg || dataAuth.error_description || 'Errore nella creazione account.');
+      }
+
+      const proprietario_id = dataAuth.user?.id;
+
+      // 3. Salva ristorante nel DB
+      btn.textContent = 'Salvataggio dati…';
+      const orari = raccogliOrari();
+
+      const resRist = await fetch(`${SUPABASE_URL}/rest/v1/ristoranti`, {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({
+          nome,
+          indirizzo,
+          telefono,
+          sito_web: sito_web || null,
+          url_menu: url_menu || null,
+          partita_iva,
+          orari,
+          lat: coords?.lat || null,
+          lng: coords?.lng || null,
+          approvato: false,
+          modalita_conferma: 'manual',
+          nome_referente,
+          proprietario_id
+        })
+      });
+
+      if (!resRist.ok) {
+        throw new Error('Errore nel salvataggio dei dati del ristorante.');
+      }
+
+      // 4. Mostra successo
+      document.getElementById('form-completo').style.display = 'none';
+      document.getElementById('messaggio-successo').style.display = 'block';
+
+    } catch(e) {
+      errore.textContent = e.message || 'Errore imprevisto. Riprova.';
+      errore.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = 'Registra il mio ristorante';
+    }
+  }
+
+  costruisciOrari();
+</script>
+</body>
+</html>

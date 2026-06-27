@@ -68,9 +68,14 @@ struct SchedaRistoranteView: View {
                             .foregroundStyle(.secondary)
                     }
 
-                    Divider()
+                                Divider()
 
-                    if let telefono = ristorante.telefono {
+                                                    if let orari = ristorante.orari {
+                                                        OrariView(orari: orari)
+                                                        Divider()
+                                                    }
+
+                                                    if let telefono = ristorante.telefono {
                         Button {
                             if let url = URL(string: "tel:\(telefono)") {
                                 UIApplication.shared.open(url)
