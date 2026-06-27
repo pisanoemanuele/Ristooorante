@@ -21,7 +21,7 @@ struct ImpostazioniView: View {
                             Text("Raggio nelle vicinanze")
                             Spacer()
                             Text("\(Int(raggioVicinanze)) km")
-                                .foregroundStyle(Color("Bordeaux"))
+                                .foregroundStyle(Color("TestoAdattivo"))
                                 .bold()
                         }
                         Slider(value: $raggioVicinanze, in: 1...50, step: 1)
@@ -49,7 +49,7 @@ struct ImpostazioniView: View {
                     Button("Chiudi") {
                         dismiss()
                     }
-                    .foregroundStyle(Color("Bordeaux"))
+                    .foregroundStyle(Color("TestoAdattivo"))
                 }
             }
         }

@@ -20,7 +20,7 @@ struct OrariView: View {
             } label: {
                 HStack {
                     Label("Orari", systemImage: "clock")
-                        .foregroundStyle(Color("Bordeaux"))
+                        .foregroundStyle(Color("TestoAdattivo"))
                     Spacer()
                     Image(systemName: espanso ? "chevron.up" : "chevron.down")
                         .foregroundStyle(.secondary)
@@ -35,9 +35,9 @@ struct OrariView: View {
                         if let info = orari[giorno] {
                             HStack(alignment: .top) {
                                 Text(giorno)
-                                                                    .frame(width: 90, alignment: .leading)
-                                                                    .font(.subheadline.bold())
-                                                                    .foregroundStyle(Color("Bordeaux"))
+                                    .frame(width: 90, alignment: .leading)
+                                    .font(.subheadline.bold())
+                                    .foregroundStyle(Color("TestoAdattivo"))
                                 if info.chiuso == true {
                                     Text("Chiuso")
                                         .font(.subheadline)

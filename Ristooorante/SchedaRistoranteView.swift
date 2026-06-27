@@ -44,11 +44,11 @@ struct SchedaRistoranteView: View {
 
                     Text(ristorante.nome)
                         .font(.largeTitle.bold())
-                        .foregroundStyle(Color("Bordeaux"))
+                        .foregroundStyle(Color("TestoAdattivo"))
 
                     if !distanza.isEmpty {
                         Label(distanza, systemImage: "location.fill")
-                            .foregroundStyle(Color("Bordeaux"))
+                            .foregroundStyle(Color("TestoAdattivo"))
                             .font(.subheadline)
                     }
 
@@ -69,17 +69,8 @@ struct SchedaRistoranteView: View {
                     if let indirizzo = ristorante.indirizzo {
                         Label(indirizzo, systemImage: "mappin")
                             .font(.subheadline)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Color("TestoAdattivo"))
                     }
-
-                    if let coordinate {
-                                            Button {
-                                                NavigatorApp.openNavigation(preferred: navigatore, to: coordinate)
-                                            } label: {
-                                                Label("Naviga con \(navigatore.displayName)", systemImage: "arrow.triangle.turn.up.right.circle")
-                                                    .foregroundStyle(Color("Bordeaux"))
-                                            }
-                                        }
 
                     Divider()
 
@@ -95,8 +86,9 @@ struct SchedaRistoranteView: View {
                             }
                         } label: {
                             Label(telefono, systemImage: "phone.fill")
-                                .foregroundStyle(Color("Bordeaux"))
+                                .foregroundStyle(Color("TestoAdattivo"))
                         }
+                        .tint(Color("Bordeaux"))
                     }
 
                     if let sito = ristorante.sito_web, let url = URL(string: sito) {
@@ -104,8 +96,9 @@ struct SchedaRistoranteView: View {
                             mostraSito = true
                         } label: {
                             Label("Sito web", systemImage: "globe")
-                                .foregroundStyle(Color("Bordeaux"))
+                                .foregroundStyle(Color("TestoAdattivo"))
                         }
+                        .tint(Color("Bordeaux"))
                         .sheet(isPresented: $mostraSito) {
                             MenuView(url: url, titolo: "Sito web")
                         }
@@ -131,16 +124,30 @@ struct SchedaRistoranteView: View {
                     }
 
                     Button {
-                        mostraPrenotazione = true
-                    } label: {
-                        Label("Prenota", systemImage: "calendar.badge.plus")
-                            .font(.headline)
-                            .foregroundStyle(.white)
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(Color("Bordeaux"))
-                            .clipShape(RoundedRectangle(cornerRadius: 12))
-                    }
+                                            mostraPrenotazione = true
+                                        } label: {
+                                            Label("Prenota", systemImage: "calendar.badge.plus")
+                                                .font(.headline)
+                                                .foregroundStyle(.white)
+                                                .frame(maxWidth: .infinity)
+                                                .padding()
+                                                .background(Color("Bordeaux"))
+                                                .clipShape(RoundedRectangle(cornerRadius: 12))
+                                        }
+
+                                        if let coordinate {
+                                            Button {
+                                                NavigatorApp.openNavigation(preferred: navigatore, to: coordinate)
+                                            } label: {
+                                                Label("Naviga con \(navigatore.displayName)", systemImage: "arrow.triangle.turn.up.right.circle")
+                                                    .font(.headline)
+                                                    .foregroundStyle(.white)
+                                                    .frame(maxWidth: .infinity)
+                                                    .padding()
+                                                    .background(Color("Bordeaux").opacity(0.7))
+                                                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                                            }
+                                        }
                 }
                 .padding()
             }
