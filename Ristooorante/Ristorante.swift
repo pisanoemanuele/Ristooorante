@@ -16,7 +16,7 @@ struct Ristorante: Codable, Identifiable {
     let telefono: String?
     let sito_web: String?
     let url_menu: String?
-    let citta_id: UUID
+    let citta_id: UUID?
     let approvato: Bool
     let modalita_conferma: String
 }
