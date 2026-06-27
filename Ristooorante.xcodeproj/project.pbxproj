@@ -14,9 +14,22 @@
 		225A4E862FEEC9FE003792E4 /* Ristooorante.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Ristooorante.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		22B8F4A02FF0452F00154838 /* Exceptions for "Ristooorante" folder in "Ristooorante" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 225A4E852FEEC9FE003792E4 /* Ristooorante */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		225A4E882FEEC9FE003792E4 /* Ristooorante */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				22B8F4A02FF0452F00154838 /* Exceptions for "Ristooorante" folder in "Ristooorante" target */,
+			);
 			path = Ristooorante;
 			sourceTree = "<group>";
 		};
@@ -265,6 +278,7 @@
 				DEVELOPMENT_TEAM = BBTM6G8SRT;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Ristooorante/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.food-and-drink";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Ristooorante usa la tua posizione per mostrarti i ristoranti nelle vicinanze";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -300,6 +314,7 @@
 				DEVELOPMENT_TEAM = BBTM6G8SRT;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Ristooorante/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.food-and-drink";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Ristooorante usa la tua posizione per mostrarti i ristoranti nelle vicinanze";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;

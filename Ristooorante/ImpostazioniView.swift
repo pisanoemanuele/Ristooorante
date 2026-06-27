@@ -9,7 +9,8 @@ import SwiftUI
 
 struct ImpostazioniView: View {
     @AppStorage("raggioVicinanze") var raggioVicinanze: Double = 5.0
-    @Environment(\.dismiss) private var dismiss
+    @AppStorage(NavigatorApp.storageKey) var navigatorePreferito: String = NavigatorApp.appleMaps.rawValue
+        @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         NavigationStack {
@@ -28,8 +29,18 @@ struct ImpostazioniView: View {
                     }
                     .padding(.vertical, 4)
                 } header: {
-                    Text("Ricerca")
-                }
+                                    Text("Ricerca")
+                                }
+
+                Section {
+                                    Picker("Navigatore preferito", selection: $navigatorePreferito) {
+                                        ForEach(NavigatorApp.availableOptions) { app in
+                                            Label(app.displayName, systemImage: app.icon).tag(app.rawValue)
+                                        }
+                                    }
+                                } header: {
+                                    Text("Navigazione")
+                                }
             }
             .navigationTitle("Impostazioni")
             .navigationBarTitleDisplayMode(.inline)
