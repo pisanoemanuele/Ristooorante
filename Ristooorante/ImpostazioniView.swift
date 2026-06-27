@@ -42,7 +42,22 @@ struct ImpostazioniView: View {
                                     Text("Navigazione")
                                 }
             }
-            .navigationTitle("Impostazioni")
+            Section {
+                                HStack {
+                                    Spacer()
+                                    VStack(spacing: 4) {
+                                        Text("by emanuelepisano · con il supporto di Claude")
+                                            .font(.footnote)
+                                            .foregroundStyle(Color("TestoAdattivo"))
+                                        Text("Versione \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "") (\(Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? ""))")
+                                            .font(.footnote)
+                                            .foregroundStyle(Color("TestoAdattivo"))
+                                    }
+                                    Spacer()
+                                }
+                                .padding(.vertical, 4)
+                            }
+                        .navigationTitle("Impostazioni")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
