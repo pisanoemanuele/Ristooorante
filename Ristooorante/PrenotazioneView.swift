@@ -15,7 +15,8 @@ struct PrenotazioneView: View {
     @State private var nome = ""
     @State private var email = ""
     @State private var telefono = ""
-    @State private var data = Date()
+    @State private var dataMinima = Calendar.current.startOfDay(for: Date())
+    @State private var data = Calendar.current.startOfDay(for: Date())
     @State private var ora = Calendar.current.date(bySettingHour: 20, minute: 0, second: 0, of: Date()) ?? Date()
     @State private var coperti = 2
     @State private var note = ""
@@ -43,7 +44,7 @@ struct PrenotazioneView: View {
                 }
 
                 Section("Prenotazione") {
-                    DatePicker("Data", selection: $data, in: Date()..., displayedComponents: .date)
+                    DatePicker("Data", selection: $data, in: dataMinima..., displayedComponents: .date)
                         .accentColor(Color("Bordeaux"))
                     DatePicker("Ora", selection: $ora, displayedComponents: .hourAndMinute)
                         .accentColor(Color("Bordeaux"))
