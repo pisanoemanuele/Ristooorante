@@ -39,6 +39,7 @@ struct SchedaRistoranteView: View {
                             VStack(alignment: .leading, spacing: 16) {
                                 Text(ristorante.nome)
                                     .font(.largeTitle.bold())
+                                    .foregroundStyle(Color("Bordeaux"))
 
                     if !distanza.isEmpty {
                         Label(distanza, systemImage: "location.fill")
