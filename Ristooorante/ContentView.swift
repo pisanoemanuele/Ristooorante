@@ -93,7 +93,7 @@ struct ContentView: View {
                         mostraImpostazioni = true
                         fabAperto = false
                     }
-                    fabBottone(icona: "location.circle.fill", indice: 2) {
+                    fabBottone(icona: "mappin.and.ellipse", indice: 2) {
                         filtraVicinanze.toggle()
                         if filtraVicinanze, let pos = locationManager.posizione {
                             position = .region(MKCoordinateRegion(
@@ -141,7 +141,7 @@ struct ContentView: View {
                 } label: {
                     Image(systemName: fabAperto ? "xmark" : "ellipsis")
                         .foregroundStyle(Color("Bordeaux"))
-                        .font(.system(size: 20, weight: .semibold))
+                        .font(.system(size: 24, weight: .semibold))
                         .frame(width: 52, height: 52)
                         .background(.white)
                         .clipShape(Circle())
@@ -171,7 +171,7 @@ struct ContentView: View {
         Button(action: azione) {
             Image(systemName: icona)
                 .foregroundStyle(Color("Bordeaux"))
-                .font(.system(size: 20, weight: .semibold))
+                .font(.system(size: 24, weight: .semibold))
                 .frame(width: 52, height: 52)
                 .background(.white)
                 .clipShape(Circle())
