@@ -285,14 +285,7 @@
             </div>
           </div>
 
-    <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:16px;margin-top:8px;">
-          <input type="checkbox" id="privacy-check" style="width:18px;height:18px;margin-top:2px;accent-color:#9F022A;flex-shrink:0;">
-          <label for="privacy-check" style="font-size:14px;color:#444;line-height:1.5;">
-            Ho letto e accetto la <a href="https://pannello.ristooorante.com/privacy" target="_blank" style="color:#9F022A;font-weight:600;">Privacy Policy</a>
-          </label>
-        </div>
-
-        <button class="btn-invia" id="btn-invia" onclick="invia()">Registra il mio ristorante</button>
+    <button class="btn-invia" id="btn-invia" onclick="invia()">Registra il mio ristorante</button>
 
   </div>
 
@@ -398,13 +391,8 @@
     const password = document.getElementById('password').value;
 
     // Validazione
-    if (!document.getElementById('privacy-check').checked) {
-          errore.textContent = 'Devi accettare la Privacy Policy per procedere.';
-          errore.style.display = 'block';
-          return;
-        }
-        if (!nome || !indirizzo || !telefono || !nome_referente || !partita_iva || !email || !password) {
-          errore.textContent = 'Compila tutti i campi obbligatori.';
+    if (!nome || !indirizzo || !telefono || !nome_referente || !partita_iva || !email || !password) {
+      errore.textContent = 'Compila tutti i campi obbligatori.';
       errore.style.display = 'block';
       return;
     }

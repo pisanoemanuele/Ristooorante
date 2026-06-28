@@ -27,11 +27,11 @@ struct ContentView: View {
                 ForEach(viewModel.ristoranti) { ristorante in
                     if let lat = ristorante.lat, let lng = ristorante.lng {
                         Annotation(ristorante.nome, coordinate: CLLocationCoordinate2D(latitude: lat, longitude: lng)) {
-                                                    PinRistorante()
-                                                        .onTapGesture {
-                                                            ristoranteSelezionato = ristorante
-                                                        }
-                                                }
+                                                                            PinRistorante(haNMenu: ristorante.url_menu != nil)
+                                                                                .onTapGesture {
+                                                                                    ristoranteSelezionato = ristorante
+                                                                                }
+                                                                        }
                     }
                 }
             }

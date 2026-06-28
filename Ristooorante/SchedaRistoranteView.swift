@@ -110,18 +110,17 @@ struct SchedaRistoranteView: View {
                         Button {
                             mostraMenu = true
                         } label: {
-                            Label("Apri menu", systemImage: "menucard")
+                            Label("Apri MenuPlus", systemImage: "menucard")
                                 .font(.headline)
                                 .foregroundStyle(.white)
                                 .frame(maxWidth: .infinity)
                                 .padding()
-                                .background(Color("Bordeaux").opacity(0.7))
-                                .clipShape(RoundedRectangle(cornerRadius: 12))
-                        }
-                        .sheet(isPresented: $mostraMenu) {
-                            MenuView(url: url, titolo: "Menu")
-                        }
-                    }
+                                .background(Color.orange)
+                                                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                                                    }
+                                                    .sheet(isPresented: $mostraMenu) {
+                                                            MenuView(url: url, titolo: "Menu")
+                                                        }                    }
 
                     Button {
                                             mostraPrenotazione = true
@@ -144,10 +143,10 @@ struct SchedaRistoranteView: View {
                                                     .foregroundStyle(.white)
                                                     .frame(maxWidth: .infinity)
                                                     .padding()
-                                                    .background(Color("Bordeaux").opacity(0.7))
-                                                    .clipShape(RoundedRectangle(cornerRadius: 12))
-                                            }
-                                        }
+                                                    .background(Color("Bordeaux"))
+                                                                                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                                                                                }
+                                                                                            }
                 }
                 .padding()
             }

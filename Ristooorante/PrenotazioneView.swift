@@ -21,7 +21,9 @@ struct PrenotazioneView: View {
     @State private var coperti = 2
     @State private var note = ""
 
-    @State private var isLoading = false
+    @State private var privacyAccettata = false
+        @State private var mostraPrivacy = false
+        @State private var isLoading = false
     @State private var mostraConferma = false
     @State private var mostraErrore = false
     @State private var messaggioErrore = ""
@@ -57,8 +59,24 @@ struct PrenotazioneView: View {
                 }
 
                 Section {
-                    Button {
-                        Task { await invia() }
+                                    Toggle(isOn: $privacyAccettata) {
+                                        HStack(spacing: 4) {
+                                            Text("Ho letto e accetto la")
+                                                .font(.footnote)
+                                                .foregroundStyle(Color("TestoAdattivo"))
+                                            Button("Privacy Policy") {
+                                                mostraPrivacy = true
+                                            }
+                                            .font(.footnote)
+                                            .foregroundStyle(Color("Bordeaux"))
+                                        }
+                                    }
+                                    .tint(Color("Bordeaux"))
+                                }
+
+                                Section {
+                                    Button {
+                                        Task { await invia() }
                     } label: {
                         HStack {
                             Spacer()
@@ -85,7 +103,10 @@ struct PrenotazioneView: View {
                         .foregroundStyle(Color("Bordeaux"))
                 }
             }
-            .alert("Prenotazione inviata", isPresented: $mostraConferma) {
+            .sheet(isPresented: $mostraPrivacy) {
+                            MenuView(url: URL(string: "https://pannello.ristooorante.com/privacy")!, titolo: "Privacy Policy")
+                        }
+                        .alert("Prenotazione inviata", isPresented: $mostraConferma) {
                 Button("OK") { dismiss() }
             } message: {
                 Text("La tua richiesta è stata inviata. Riceverai una email di conferma dal ristorante.")
@@ -101,7 +122,8 @@ struct PrenotazioneView: View {
     var formValido: Bool {
         !nome.trimmingCharacters(in: .whitespaces).isEmpty &&
         !email.trimmingCharacters(in: .whitespaces).isEmpty &&
-        email.contains("@")
+                email.contains("@") &&
+                privacyAccettata
     }
 
     func invia() async {
