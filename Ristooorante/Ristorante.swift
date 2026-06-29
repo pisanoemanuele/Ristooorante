@@ -19,6 +19,7 @@ struct Ristorante: Codable, Identifiable {
     let citta_id: UUID?
     let approvato: Bool
     let modalita_conferma: String
+        let modalita_prenotazione: String?
         let orari: [String: OrariGiorno]?
     }
 

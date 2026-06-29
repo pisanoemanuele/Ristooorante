@@ -769,18 +769,10 @@
                 <input type="text" id="profilo-sito" value="${r.sito_web || ''}">
               </div>
               <div class="campo-profilo">
-                              <label>Link menu menuplus</label>
-                              <input type="text" id="profilo-menu" value="${r.url_menu || ''}">
-                            </div>
-                            <div class="campo-profilo">
-                              <label>Modalità di prenotazione</label>
-                              <select id="profilo-modalita" style="width:100%;padding:12px 14px;border:1.5px solid #e0e0e0;border-radius:10px;font-size:15px;outline:none;background:white;color:#1a1a1a;">
-                                <option value="app" ${(r.modalita_prenotazione || 'app') === 'app' ? 'selected' : ''}>Solo tramite app</option>
-                                <option value="telefono" ${r.modalita_prenotazione === 'telefono' ? 'selected' : ''}>Solo tramite telefono</option>
-                                <option value="entrambi" ${r.modalita_prenotazione === 'entrambi' ? 'selected' : ''}>Tramite app e telefono</option>
-                              </select>
-                            </div>
-                            <hr style="border:none;border-top:1px solid #f0f0f0;margin:8px 0 20px">
+                <label>Link menu menuplus</label>
+                <input type="text" id="profilo-menu" value="${r.url_menu || ''}">
+              </div>
+              <hr style="border:none;border-top:1px solid #f0f0f0;margin:8px 0 20px">
               <label style="font-size:15px;font-weight:700;color:#1a1a1a;margin-bottom:16px;display:block;">Orari di apertura</label>
               <div>${righeOrari}</div>
             `;
@@ -855,7 +847,7 @@
                     'Content-Type': 'application/json',
                     'Prefer': 'return=minimal'
                   },
-                  body: JSON.stringify({ nome, indirizzo, telefono, sito_web: sito_web || null, url_menu: url_menu || null, orari: raccogliOrariProfilo(), lat, lng, modalita_prenotazione: document.getElementById('profilo-modalita').value })
+                  body: JSON.stringify({ nome, indirizzo, telefono, sito_web: sito_web || null, url_menu: url_menu || null, orari: raccogliOrariProfilo(), lat, lng })
                 });
 
         if (res.ok) {

@@ -122,16 +122,38 @@ struct SchedaRistoranteView: View {
                                                             MenuView(url: url, titolo: "Menu")
                                                         }                    }
 
-                    Button {
-                                            mostraPrenotazione = true
-                                        } label: {
-                                            Label("Prenota", systemImage: "calendar.badge.plus")
-                                                .font(.headline)
-                                                .foregroundStyle(.white)
-                                                .frame(maxWidth: .infinity)
-                                                .padding()
-                                                .background(Color("Bordeaux"))
-                                                .clipShape(RoundedRectangle(cornerRadius: 12))
+                    let modalita = ristorante.modalita_prenotazione ?? "app"
+
+                                        if modalita == "app" || modalita == "entrambi" {
+                                            Button {
+                                                mostraPrenotazione = true
+                                            } label: {
+                                                Label("Prenota", systemImage: "calendar.badge.plus")
+                                                    .font(.headline)
+                                                    .foregroundStyle(.white)
+                                                    .frame(maxWidth: .infinity)
+                                                    .padding()
+                                                    .background(Color("Bordeaux"))
+                                                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                                            }
+                                        }
+
+                                        if modalita == "telefono" || modalita == "entrambi" {
+                                            if let telefono = ristorante.telefono {
+                                                Button {
+                                                    if let url = URL(string: "tel:\(telefono)") {
+                                                        UIApplication.shared.open(url)
+                                                    }
+                                                } label: {
+                                                    Label("Prenota per telefono", systemImage: "phone.fill")
+                                                        .font(.headline)
+                                                        .foregroundStyle(.white)
+                                                        .frame(maxWidth: .infinity)
+                                                        .padding()
+                                                        .background(Color("Bordeaux"))
+                                                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                                                }
+                                            }
                                         }
 
                                         if let coordinate {

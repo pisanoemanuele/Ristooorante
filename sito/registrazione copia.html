@@ -245,16 +245,7 @@
       </div>
 
       <div class="campo">
-              <label for="modalita_prenotazione">Modalità di prenotazione</label>
-              <select id="modalita_prenotazione" style="width:100%;padding:12px 14px;border:1.5px solid #e0e0e0;border-radius:10px;font-size:15px;outline:none;background:white;color:#1a1a1a;">
-                <option value="app">Solo tramite app</option>
-                <option value="telefono">Solo tramite telefono</option>
-                <option value="entrambi">Tramite app e telefono</option>
-              </select>
-            </div>
-
-            <div class="campo">
-              <label for="nome_referente">Nome e cognome del referente</label>
+        <label for="nome_referente">Nome e cognome del referente</label>
         <input type="text" id="nome_referente" placeholder="Es. Mario Rossi">
         <p class="hint">Il proprietario o gestore del ristorante</p>
       </div>
@@ -497,9 +488,8 @@
           approvato: false,
           modalita_conferma: 'manual',
           nome_referente,
-          proprietario_id,
-                    email,
-                    modalita_prenotazione: document.getElementById('modalita_prenotazione').value
+                    proprietario_id,
+                    email
                   })
       });
 
