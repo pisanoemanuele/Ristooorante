@@ -40,7 +40,7 @@ struct PrenotazioneView: View {
                         .keyboardType(.emailAddress)
                         .autocorrectionDisabled()
                         .textInputAutocapitalization(.never)
-                    TextField("Telefono (opzionale)", text: $telefono)
+                    TextField("Telefono", text: $telefono)
                         .textContentType(.telephoneNumber)
                         .keyboardType(.phonePad)
                 }
@@ -120,11 +120,12 @@ struct PrenotazioneView: View {
     }
 
     var formValido: Bool {
-        !nome.trimmingCharacters(in: .whitespaces).isEmpty &&
-        !email.trimmingCharacters(in: .whitespaces).isEmpty &&
-                email.contains("@") &&
-                privacyAccettata
-    }
+            !nome.trimmingCharacters(in: .whitespaces).isEmpty &&
+            !email.trimmingCharacters(in: .whitespaces).isEmpty &&
+                    email.contains("@") &&
+                    !telefono.trimmingCharacters(in: .whitespaces).isEmpty &&
+                    privacyAccettata
+        }
 
     func invia() async {
             isLoading = true
